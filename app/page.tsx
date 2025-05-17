@@ -1,103 +1,162 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Logo from "@/public/icon_TRANSPARENT.png";
+import { ArrowRight, Terminal } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+export default function TeaserPage() {
+	const [consoleText, setConsoleText] = useState("");
+	const [email, setEmail] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	useEffect(() => {
+		const messages = [
+			"[winterhost]: Initializing system...",
+			"[winterhost]: Loading core modules...",
+			"[winterhost]: Restructuring infrastructure...",
+			"[winterhost]: Optimizing resource allocation...",
+			"[winterhost]: Enhancing dashboard...",
+			"[winterhost]: Fixing last bugs...",
+			"[winterhost]: Preparing for deployment...",
+		];
+
+		let currentMessageIndex = 0;
+		let currentCharIndex = 0;
+		const timeouts: NodeJS.Timeout[] = [];
+
+		const typeNextChar = () => {
+			if (currentMessageIndex < messages.length) {
+				if (!messages[currentMessageIndex]) return;
+				const currentMessage = messages[currentMessageIndex];
+
+				if (currentCharIndex < currentMessage.length) {
+					const nextChar = currentMessage[currentCharIndex];
+					if (nextChar !== undefined) {
+						setConsoleText((prev) => prev + nextChar);
+					}
+					currentCharIndex++;
+					timeouts.push(setTimeout(typeNextChar, 50 + Math.random() * 50));
+				} else {
+					setConsoleText((prev) => prev + "\n");
+					currentMessageIndex++;
+					currentCharIndex = 0;
+					timeouts.push(setTimeout(typeNextChar, 1000));
+				}
+			}
+		};
+
+		timeouts.push(setTimeout(typeNextChar, 1000));
+
+		return () => {
+			timeouts.forEach(clearTimeout);
+		};
+	}, []);
+
+	return (
+		<div className="flex min-h-screen flex-col bg-black text-white">
+			<header className="container flex h-16 items-center justify-between py-4">
+				<div className="flex items-center gap-2">
+					<Image
+						src={Logo}
+						alt="Winterhost Logo"
+						width={20}
+						height={20}
+						className="text-blue-500"
+					/>
+					<span className="text-lg font-medium">Winterhost</span>
+				</div>
+				<div className="flex items-center">
+					<div className="flex items-center rounded-full bg-zinc-900 px-3 py-1">
+						<span className="mr-2 h-2 w-2 rounded-full bg-green-500"></span>
+						<span className="text-xs text-zinc-400">
+							Development in Progress
+						</span>
+					</div>
+				</div>
+			</header>
+
+			<main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
+				<div className="w-full max-w-2xl space-y-10">
+					<div className="space-y-4 text-center">
+						<h1 className="text-4xl font-light tracking-tight sm:text-5xl">
+							A New <span className="text-blue-500">Winterhost</span> Experience
+						</h1>
+						<p className="mx-auto max-w-md text-sm text-zinc-400">
+							We've completely rebuilt our infrastructure from the ground up.
+							More powerful. More reliable. Coming soon.
+						</p>
+					</div>
+
+					<div className="space-y-2">
+						<div className="flex items-center gap-2">
+							<Terminal className="h-4 w-4 text-blue-500" />
+							<span className="text-xs font-medium uppercase text-zinc-500">
+								System Status
+							</span>
+						</div>
+						<div className="rounded-md border border-zinc-800 bg-zinc-900/50 p-4">
+							<pre className="font-mono text-xs text-zinc-400">
+								<code>{consoleText || "[winterhost]: Connecting..."}</code>
+							</pre>
+						</div>
+					</div>
+
+					<div className="mx-auto max-w-md space-y-2">
+						<p className="text-center text-xs text-zinc-500">
+							Get notified when we launch
+						</p>
+						<div className="flex gap-2">
+							<Input
+								type="email"
+								placeholder="Enter your email"
+								className="border-zinc-800 bg-zinc-900/50 text-sm"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+							<Button
+								variant="outline"
+								className="border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+							>
+								Notify Me
+								<ArrowRight className="ml-2 h-4 w-4" />
+							</Button>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<footer className="container border-t border-zinc-900 py-4">
+				<div className="flex flex-col items-center justify-between gap-4 md:flex-row md:items-center">
+					<p className="text-xs text-zinc-600">
+						&copy; {new Date().getFullYear()} Winterhost. All rights reserved.
+					</p>
+					<div className="flex items-center gap-6">
+						<a
+							href="https://discord.gg/XkekC3qJjT"
+							target="_blank"
+							className="text-xs text-zinc-600 hover:text-zinc-400"
+						>
+							Discord
+						</a>
+						<a
+							href="https://x.com/winterhostde"
+							target="_blank"
+							className="text-xs text-zinc-600 hover:text-zinc-400"
+						>
+							X
+						</a>
+						<a
+							href="https://github.com/winterhost"
+							target="_blank"
+							className="text-xs text-zinc-600 hover:text-zinc-400"
+						>
+							GitHub
+						</a>
+					</div>
+				</div>
+			</footer>
+		</div>
+	);
 }
